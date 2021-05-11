@@ -6,9 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:rush/managment/locale.dart';
 import 'package:rush/utils/colors.dart';
 import 'package:rush/utils/constats.dart';
+import 'package:rush/utils/custom_validators.dart';
+import 'package:rush/utils/input_icons.dart';
 import 'package:rush/widgets/app_bar.dart';
 import 'package:rush/widgets/custom_button.dart';
-import 'package:rush/widgets/form_imput.dart';
+import 'package:rush/widgets/form_input.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -22,6 +24,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   LocaleManagment localeManagment;
   GlobalKey<FormState> _formState = GlobalKey<FormState>();
   TextEditingController _passwordController = TextEditingController();
+  bool _hidePassword = true;
+  bool _hideRepeatedPassword = true;
+  bool _isEmailValid = false;
 
   @override
   void initState() {
@@ -158,7 +163,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             children: [
               FormInput(
+                prefixIcon: InputIcons.emailPrefix,
+                onChanged: (v) {
+                  if (CustomValidators.isValidEmail(v)) {
+                    setState(() {
+                      _isEmailValid = true;
+                    });
+                  } else {
+                    setState(() {
+                      _isEmailValid = false;
+                    });
+                  }
+                },
+                showSuffix: _isEmailValid,
+                suffixIcon: InputIcons.doneIcon,
                 hint: AppLocalizations.of(context).emailHint,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: MultiValidator([
                   RequiredValidator(errorText: "E-Mail is required"),
                   PatternValidator(AppConstats.Regexp_Email,
@@ -166,10 +186,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ]),
               ),
               FormInput(
+                prefixIcon: InputIcons.userPrefix,
                 hint: AppLocalizations.of(context).usernameHint,
                 validator: RequiredValidator(errorText: "Username is required"),
               ),
               FormInput(
+                obscureText: _hidePassword,
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _hidePassword = !_hidePassword;
+                    });
+                  },
+                  child: InputIcons.passwordSuffix,
+                ),
+                prefixIcon: InputIcons.passwordPrefix,
                 controller: _passwordController,
                 hint: AppLocalizations.of(context).passwordHint,
                 validator: MultiValidator([
@@ -181,6 +212,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ]),
               ),
               FormInput(
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _hideRepeatedPassword = !_hideRepeatedPassword;
+                    });
+                  },
+                  child: InputIcons.passwordSuffix,
+                ),
+                obscureText: _hideRepeatedPassword,
+                prefixIcon: InputIcons.passwordPrefix,
                 hint: "Confirm password",
                 validator: (v) => v.isEmpty
                     ? "Please confirm password"

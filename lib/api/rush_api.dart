@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:rush/api/dio_base.dart';
 import 'package:rush/api/services/user_services.dart';
 

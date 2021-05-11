@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:rush/managment/locale.dart';
 import 'package:rush/pages/sign_up_screen.dart';
 import 'package:rush/utils/colors.dart';
-import 'package:rush/utils/constats.dart';
+import 'package:rush/utils/input_icons.dart';
 import 'package:rush/widgets/custom_button.dart';
-import 'package:rush/widgets/form_imput.dart';
+import 'package:rush/widgets/form_input.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -19,6 +19,8 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   bool wantToRemember = false;
   LocaleManagment localeManagment;
+
+  bool _hidePassword = true;
 
   GlobalKey<FormState> _formState = GlobalKey<FormState>();
 
@@ -92,18 +94,24 @@ class _SignInScreenState extends State<SignInScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               FormInput(
+                prefixIcon: InputIcons.emailPrefix,
                 hint: AppLocalizations.of(context).emailHint,
-                validator: MultiValidator([
-                  RequiredValidator(errorText: "E-Mail is required"),
-                  PatternValidator(AppConstats.Regexp_Email,
-                      errorText: "Please write valid e-mail"),
-                ]),
+                validator: RequiredValidator(errorText: "Please write E-Mail"),
               ),
               FormInput(
+                prefixIcon: InputIcons.passwordPrefix,
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _hidePassword = !_hidePassword;
+                    });
+                  },
+                  child: InputIcons.passwordSuffix,
+                ),
                 validator:
                     RequiredValidator(errorText: "Please write password"),
                 hint: AppLocalizations.of(context).passwordHint,
-                obscureText: true,
+                obscureText: _hidePassword,
               ),
               SizedBox(
                 height: 10,
