@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:provider/provider.dart';
@@ -22,8 +23,11 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   LocaleManagment localeManagment;
-  GlobalKey<FormState> _formState = GlobalKey<FormState>();
-  TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formState = GlobalKey<FormState>();
+  final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _usernameNode = FocusNode();
+  final FocusNode _passwordNode = FocusNode();
+  final FocusNode _confirmPasswordNode = FocusNode();
   bool _hidePassword = true;
   bool _hideRepeatedPassword = true;
   bool _isEmailValid = false;
@@ -37,6 +41,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void dispose() {
     _passwordController.dispose();
+    _passwordNode.dispose();
+    _usernameNode.dispose();
+    _confirmPasswordNode.dispose();
     super.dispose();
   }
 
@@ -83,6 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               title: AppLocalizations.of(context).signUpButton,
               onClick: () {
                 _formState.currentState.validate();
+                FocusScope.of(context).unfocus();
               },
             ),
           ],
@@ -163,6 +171,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             children: [
               FormInput(
+                onEditingComplete: () => _usernameNode.requestFocus(),
+                inputAction: TextInputAction.next,
                 prefixIcon: InputIcons.emailPrefix,
                 onChanged: (v) {
                   if (CustomValidators.isValidEmail(v)) {
@@ -178,7 +188,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 showSuffix: _isEmailValid,
                 suffixIcon: InputIcons.doneIcon,
                 hint: AppLocalizations.of(context).emailHint,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: MultiValidator([
                   RequiredValidator(errorText: "E-Mail is required"),
                   PatternValidator(AppConstats.Regexp_Email,
@@ -186,11 +195,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ]),
               ),
               FormInput(
+                onEditingComplete: () => _passwordNode.requestFocus(),
+                inputAction: TextInputAction.next,
+                focusNode: _usernameNode,
                 prefixIcon: InputIcons.userPrefix,
                 hint: AppLocalizations.of(context).usernameHint,
                 validator: RequiredValidator(errorText: "Username is required"),
               ),
               FormInput(
+                inputAction: TextInputAction.next,
+                onEditingComplete: () => _confirmPasswordNode.requestFocus(),
+                focusNode: _passwordNode,
                 obscureText: _hidePassword,
                 suffixIcon: GestureDetector(
                   onTap: () {
@@ -212,6 +227,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ]),
               ),
               FormInput(
+                focusNode: _confirmPasswordNode,
+                inputAction: TextInputAction.done,
+                onEditingComplete: () => _confirmPasswordNode.unfocus(),
                 suffixIcon: GestureDetector(
                   onTap: () {
                     setState(() {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:provider/provider.dart';
 import 'package:rush/managment/locale.dart';
 import 'package:rush/pages/sign_up_screen.dart';
@@ -21,8 +23,9 @@ class _SignInScreenState extends State<SignInScreen> {
   LocaleManagment localeManagment;
 
   bool _hidePassword = true;
+  final FocusNode _passwordNode = FocusNode();
 
-  GlobalKey<FormState> _formState = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formState = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -31,18 +34,26 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   @override
+  void dispose() {
+    _passwordNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (c, cn) => SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: cn.maxWidth,
-                minHeight: cn.maxHeight,
-              ),
-              child: _body(
-                parentConstraits: cn,
+    return KeyboardDismisser(
+      child: Scaffold(
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (c, cn) => SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: cn.maxWidth,
+                  minHeight: cn.maxHeight,
+                ),
+                child: _body(
+                  parentConstraits: cn,
+                ),
               ),
             ),
           ),
@@ -64,6 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
               onClick: () {
                 localeManagment.setLocale(locale: Locale("en"));
                 _formState.currentState.validate();
+                FocusScope.of(context).unfocus();
               },
               title: AppLocalizations.of(context).signInButton,
               fillColor: AppColors.Red_Dark,
@@ -94,11 +106,17 @@ class _SignInScreenState extends State<SignInScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               FormInput(
+                onEditingComplete: () => _passwordNode.requestFocus(),
+                inputAction: TextInputAction.next,
+                inputType: TextInputType.emailAddress,
                 prefixIcon: InputIcons.emailPrefix,
                 hint: AppLocalizations.of(context).emailHint,
                 validator: RequiredValidator(errorText: "Please write E-Mail"),
               ),
               FormInput(
+                focusNode: _passwordNode,
+                onEditingComplete: () => _passwordNode.unfocus(),
+                inputAction: TextInputAction.done,
                 prefixIcon: InputIcons.passwordPrefix,
                 suffixIcon: GestureDetector(
                   onTap: () {

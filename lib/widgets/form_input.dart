@@ -4,6 +4,7 @@ class FormInput extends StatelessWidget {
   final FormFieldSetter<String> onSaved;
   final FormFieldSetter<String> onChanged;
   final FormFieldValidator<String> validator;
+  final Function onEditingComplete;
   final bool obscureText;
   final TextInputType inputType;
   final TextInputAction inputAction;
@@ -26,11 +27,12 @@ class FormInput extends StatelessWidget {
     this.onSaved,
     this.validator,
     this.hint,
-    this.autovalidateMode = AutovalidateMode.disabled,
+    this.autovalidateMode = AutovalidateMode.onUserInteraction,
     this.showSuffix = true,
     this.suffixIcon,
     this.prefixIcon,
     this.showPrefix = true,
+    this.onEditingComplete,
   });
 
   @override
@@ -38,7 +40,8 @@ class FormInput extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: 30),
       child: TextFormField(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        onEditingComplete: onEditingComplete,
+        autovalidateMode: autovalidateMode,
         controller: controller,
         focusNode: focusNode,
         textInputAction: inputAction,
