@@ -1,0 +1,39 @@
+{
+    "language": "English",
+    "@language":{
+        "description":"Language is English"
+    },
+    "signInButton":"Sign In",
+    "@signInButton":{
+        "description":"Sign In"
+    },
+    "signUpButton": "Sign Up",
+    "@signUpButton":{
+        "description":"Sign Up"
+    },
+    "usernameHint": "Username",
+    "@usernameHint":{
+        "description":"Name of user"
+    },
+    "passwordHint": "Password",
+    "@passwordHint":{
+        "description":"Password"
+    },
+    "emailHint": "Email",
+    "@emailHint":{
+        "description":"Email"
+    },
+    "forgotPass": "Forgot Password?",
+    "@forgotPass":{
+        "description":"Forgot Password"
+    },
+    "resgistrationTitle": "Registration",
+    "@resgistrationTitle":{
+        "description":"Registration"
+    },
+    "confirmRemember": "Confirm Remember",
+    "@confirmRemember":{
+        "description":"Confirm"
+    }
+    
+}

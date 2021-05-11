@@ -1,0 +1,39 @@
+{
+    "language": "Հայերեն",
+    "@language":{
+        "description":"Language is Armenian"
+    },
+    "signInButton":"Մուտք գործել",
+     "@signInButton":{
+        "description":"Sign In"
+    },
+    
+    "signUpButton": "Գրանցվել",
+     "@signUpButton":{
+        "description":"Sign Up"
+    },
+    "usernameHint": "Օգտատիրոջ անում",
+     "@usernameHint":{
+        "description":"Username"
+    },
+    "passwordHint": "Գաղտնաբառ",
+     "@passwordHint":{
+        "description":"Password"
+    },
+    "emailHint": "էլ. հասցե",
+     "@emailHint":{
+        "description":"Email"
+    },
+    "forgotPass": "Մոռացել եք գաղտնաբառը?",
+    "@forgotPass":{
+        "description":"Forgot Password"
+    },
+    "resgistrationTitle":"Գրանցվել",
+    "@resgistrationTitle":{
+        "description":"Registration"
+    },
+    "confirmRemember": "Հիշել գաղտնաբառը",
+    "@confirmRemember":{
+        "description":"Confirm"
+    }
+}
