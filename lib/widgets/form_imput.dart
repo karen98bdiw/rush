@@ -37,10 +37,10 @@ class FormInput extends StatelessWidget {
         onSaved: onSaved,
         onChanged: onChanged,
         validator: validator,
-        style: _style(),
+        style: Theme.of(context).textTheme.headline3,
         decoration: InputDecoration(
             hintText: hint,
-            hintStyle: _style(),
+            hintStyle: Theme.of(context).textTheme.headline3,
             isDense: true,
             contentPadding: EdgeInsets.only(
               bottom: 8,
@@ -48,10 +48,4 @@ class FormInput extends StatelessWidget {
       ),
     );
   }
-
-  TextStyle _style() => TextStyle(
-        color: Colors.black,
-        fontSize: 18,
-        fontWeight: FontWeight.w400,
-      );
 }

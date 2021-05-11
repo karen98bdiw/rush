@@ -68,11 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             Text(
               AppLocalizations.of(context).forgotPass,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(context).textTheme.headline6,
             ),
             GestureDetector(
               onTap: () {
@@ -80,11 +76,7 @@ class _SignInScreenState extends State<SignInScreen> {
               },
               child: Text(
                 AppLocalizations.of(context).signUpButton,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: Theme.of(context).textTheme.headline1,
               ),
             ),
           ],
@@ -144,11 +136,7 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
           Text(
             "Remember Password",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).textTheme.headline6,
           ),
         ],
       );
