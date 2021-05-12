@@ -24,7 +24,7 @@ class CustomUser {
         avatar: json["avatar"],
         email: json["email"],
         id: json["id"],
-        userName: json["userName"],
+        userName: json["username"],
       );
 
   Map<String, dynamic> toJson() {

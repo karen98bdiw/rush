@@ -7,10 +7,11 @@ class DioBase {
   var _dio = Dio();
 
   ///dio custom post request
-  Future<ApiResponse<T>> post<T>(
-      {String endPoint,
-      Map<String, dynamic> additionalParams,
-      dynamic data}) async {
+  Future<ApiResponse<T>> post<T>({
+    String endPoint,
+    Map<String, dynamic> additionalParams,
+    dynamic data,
+  }) async {
     Map<String, dynamic> params = {};
     if (additionalParams != null) {
       additionalParams.forEach((key, value) {
@@ -25,8 +26,7 @@ class DioBase {
         options: Options(),
       );
 
-      print(res);
-      if (res.statusCode == 200) {
+      if (res.statusCode == 200 || res.statusCode == 201) {
         return ApiResponse<T>(
           done: true,
           succses: true,

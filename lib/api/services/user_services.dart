@@ -3,6 +3,7 @@ import 'package:rush/api/dio_base.dart';
 import 'package:rush/models/api_models/api_response.dart';
 import 'package:rush/models/custom_user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+import 'package:rush/models/sign_in_response.dart';
 
 class UserServices {
   final DioBase dioBase;
@@ -21,16 +22,17 @@ class UserServices {
     return res;
   }
 
-  Future<ApiResponse<CustomUser>> signIn({
+  Future<ApiResponse<SignInResponse>> signIn({
     String email,
     String password,
   }) async {
-    var res = await dioBase.get<CustomUser>(
-        endPoint: DotEnv.env["SIGN_IN_POINT"],
-        additionalParams: {
-          "email": email,
-          "password": password,
-        });
+    var res = await dioBase.post<SignInResponse>(
+      endPoint: DotEnv.env["SIGN_IN_POINT"],
+      data: {
+        "email": email,
+        "password": password,
+      },
+    );
     return res;
   }
 }

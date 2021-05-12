@@ -7,6 +7,7 @@ import 'package:rush/pages/sign_up_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:rush/utils/app_theme.dart';
+import 'package:rush/utils/global_keys.dart';
 
 class RushApp extends StatelessWidget {
   final delegates = [
@@ -26,6 +27,7 @@ class RushApp extends StatelessWidget {
       builder: (c, child) {
         var localeManagment = Provider.of<LocaleManagment>(c);
         return MaterialApp(
+          navigatorKey: GlobalKeys.navigatorKey,
           theme: ThemeData(
             fontFamily: "American Typewriter",
             textTheme: AppTheme.Text_Theme,
