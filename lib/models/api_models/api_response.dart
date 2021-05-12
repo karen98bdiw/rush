@@ -1,4 +1,5 @@
 import 'package:rush/models/api_models/api_error.dart';
+import 'package:rush/models/custom_user.dart';
 
 class ApiResponse<T> {
   final bool done;
@@ -10,9 +11,9 @@ class ApiResponse<T> {
 
   parsedData() {
     switch (T) {
-      // case CustomUser:
-      //   return CustomUser.fromJson(this.response);
-      //   break;
+      case CustomUser:
+        return CustomUser.fromJson(this.response);
+        break;
       // case CharacterWrapper:
       //   return CharacterWrapper.fromJson(this.response);
       //   break;

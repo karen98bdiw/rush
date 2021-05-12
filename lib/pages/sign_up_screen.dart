@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -5,9 +7,12 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:provider/provider.dart';
 import 'package:rush/managment/locale.dart';
+import 'package:rush/managment/user_managment.dart';
+import 'package:rush/models/custom_user.dart';
 import 'package:rush/utils/colors.dart';
 import 'package:rush/utils/constats.dart';
 import 'package:rush/utils/custom_validators.dart';
+import 'package:rush/utils/image_picker.dart';
 import 'package:rush/utils/input_icons.dart';
 import 'package:rush/widgets/app_bar.dart';
 import 'package:rush/widgets/custom_button.dart';
@@ -31,11 +36,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _hidePassword = true;
   bool _hideRepeatedPassword = true;
   bool _isEmailValid = false;
+  File pickedAvatar;
+  CustomUser customUser = CustomUser();
+  String _password;
+  UserManagment userManagment = UserManagment();
 
   @override
   void initState() {
     localeManagment = Provider.of<LocaleManagment>(context, listen: false);
     super.initState();
+  }
+
+  void onSignUp() async {
+    if (!_formState.currentState.validate()) return;
+    _formState.currentState.save();
+    print("onSignUp");
+    userManagment.signUp(
+      password: _password,
+      model: customUser,
+    );
   }
 
   @override
@@ -89,7 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             CustomButton(
               title: AppLocalizations.of(context).signUpButton,
               onClick: () {
-                _formState.currentState.validate();
+                onSignUp();
                 FocusScope.of(context).unfocus();
               },
             ),
@@ -124,12 +143,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: CircleAvatar(
                       radius: parentConstraits.maxHeight * 0.075,
                       backgroundColor: Colors.white,
+                      backgroundImage:
+                          pickedAvatar != null ? FileImage(pickedAvatar) : null,
                     ),
                   ),
                   Positioned(
                     right: 0,
                     bottom: 0,
                     child: GestureDetector(
+                      onTap: () async {
+                        var res = await pickAvatar();
+                        setState(() {
+                          pickedAvatar = res;
+                          customUser.setUploadedAvatar = pickedAvatar;
+                        });
+                      },
                       child: Container(
                         padding: EdgeInsets.all(7),
                         decoration: BoxDecoration(
@@ -155,6 +183,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
+                  if (pickedAvatar != null)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            pickedAvatar = null;
+                            customUser.setUploadedAvatar = null;
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 1,
+                                blurRadius: 2,
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.delete,
+                              color: AppColors.Main_Orange,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -171,6 +235,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             children: [
               FormInput(
+                onSaved: (v) => customUser.email = v,
                 onEditingComplete: () => _usernameNode.requestFocus(),
                 inputAction: TextInputAction.next,
                 prefixIcon: InputIcons.emailPrefix,
@@ -195,6 +260,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ]),
               ),
               FormInput(
+                onSaved: (v) => customUser.userName = v,
                 onEditingComplete: () => _passwordNode.requestFocus(),
                 inputAction: TextInputAction.next,
                 focusNode: _usernameNode,
@@ -203,6 +269,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 validator: RequiredValidator(errorText: "Username is required"),
               ),
               FormInput(
+                onSaved: (v) => _password = v,
                 inputAction: TextInputAction.next,
                 onEditingComplete: () => _confirmPasswordNode.requestFocus(),
                 focusNode: _passwordNode,

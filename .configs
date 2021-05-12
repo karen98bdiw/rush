@@ -1,0 +1,5 @@
+ROOT_URL_DEV = https://apidev.trivialrush.com
+
+SIGN_IN_POINT = /auth/sign-in
+
+SIGN_UP_POINT = /auth/registration
