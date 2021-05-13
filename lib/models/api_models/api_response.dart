@@ -20,7 +20,7 @@ class ApiResponse<T> {
         break;
 
       default:
-        this.response as T;
+        return response;
     }
   }
 

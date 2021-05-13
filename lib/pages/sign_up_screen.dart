@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:rush/managment/locale.dart';
 import 'package:rush/managment/user_managment.dart';
 import 'package:rush/models/custom_user.dart';
+import 'package:rush/pages/apply_code_screen.dart';
 import 'package:rush/utils/colors.dart';
 import 'package:rush/utils/constats.dart';
 import 'package:rush/utils/custom_validators.dart';
@@ -51,10 +52,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (!_formState.currentState.validate()) return;
     _formState.currentState.save();
     print("onSignUp");
-    userManagment.signUp(
+    var signUpRes = await userManagment.signUp(
       password: _password,
       model: customUser,
     );
+    if (signUpRes.done && signUpRes.succses) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (c) => ApplyCodeScreen(
+          token: signUpRes.response,
+        ),
+      ));
+    }
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rush/l10n/l10n.dart';
 import 'package:rush/managment/locale.dart';
+import 'package:rush/pages/apply_code_screen.dart';
 import 'package:rush/pages/sign_in_screen.dart';
 import 'package:rush/pages/sign_up_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -39,6 +40,7 @@ class RushApp extends StatelessWidget {
           routes: {
             SignUpScreen.routeName: (c) => SignUpScreen(),
             SignInScreen.routeName: (c) => SignInScreen(),
+            ApplyCodeScreen.routeName: (c) => ApplyCodeScreen(),
           },
         );
       },

@@ -8,6 +8,7 @@ import 'package:rush/managment/user_managment.dart';
 import 'package:rush/pages/sign_up_screen.dart';
 import 'package:rush/utils/colors.dart';
 import 'package:rush/utils/input_icons.dart';
+import 'package:rush/widgets/app_inScreen_logo.dart';
 import 'package:rush/widgets/custom_button.dart';
 import 'package:rush/widgets/form_input.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -82,7 +83,7 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _top(parentContstaits: parentConstraits),
+            AppInScreenLogo(parentContstaits: parentConstraits),
             _form(parentConstrints: parentConstraits),
             CustomButton(
               onClick: () {
@@ -154,11 +155,6 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       );
 
-  Widget _top({BoxConstraints parentContstaits}) => Image.asset(
-        "assets/images/trivia_icon.png",
-        height: parentContstaits.maxHeight * 0.2,
-        fit: BoxFit.fitHeight,
-      );
   Widget _confirmRemember() => Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,

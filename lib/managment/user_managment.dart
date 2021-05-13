@@ -1,11 +1,12 @@
 import 'package:rush/api/rush_api.dart';
+import 'package:rush/models/api_models/api_response.dart';
 import 'package:rush/models/custom_user.dart';
 import 'package:rush/utils/diologs.dart';
 
 class UserManagment {
   CustomUser curetUser;
 
-  Future<dynamic> signUp({
+  Future<ApiResponse<dynamic>> signUp({
     CustomUser model,
     String password,
   }) async {
@@ -17,15 +18,22 @@ class UserManagment {
     if (res.done && res.succses) {
       print("user created");
       print("response dat:${res.data}");
+      var signRes = await signIn(
+        email: model.email,
+        password: password,
+        firstSign: true,
+      );
+      return signRes;
     } else {
       showError(errorText: res.error.errorText);
+      return res;
     }
-    return res;
   }
 
-  Future<dynamic> signIn({
+  Future<ApiResponse<bool>> signIn({
     String email,
     String password,
+    bool firstSign = false,
   }) async {
     var res = await RushApi().userServices.signIn(
           email: email,
@@ -35,11 +43,23 @@ class UserManagment {
     if (res.done && res.succses) {
       print("user created");
       print("response dat:${res.data.token}");
-      await getUserData(token: res.data.token);
+      if (firstSign) {
+        var codeRes = await RushApi()
+            .userServices
+            .sendVerification(token: res.data.token);
+        return ApiResponse(
+          done: codeRes.done,
+          succses: codeRes.succses,
+          response: res.data.token,
+        );
+      }
     } else {
       showError(errorText: res.error.errorText);
     }
-    return res;
+    return ApiResponse(
+      done: false,
+      succses: false,
+    );
   }
 
   Future<void> getUserData({String token}) async {

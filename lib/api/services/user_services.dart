@@ -20,7 +20,10 @@ class UserServices {
       endPoint: DotEnv.env["SIGN_UP_POINT"],
       data: FormData.fromMap(params),
     );
-
+    await signIn(
+      email: model.email,
+      password: password,
+    );
     return res;
   }
 
@@ -35,6 +38,7 @@ class UserServices {
         "password": password,
       },
     );
+
     return res;
   }
 
@@ -44,6 +48,41 @@ class UserServices {
       options: Options(headers: {
         HttpHeaders.authorizationHeader: token,
       }),
+    );
+
+    return res;
+  }
+
+  Future<ApiResponse<bool>> sendVerification({
+    String token,
+  }) async {
+    print("sending verification");
+    var res = await dioBase.get<bool>(
+      endPoint: "/auth/send-verification",
+      options: Options(headers: {
+        HttpHeaders.authorizationHeader: "Bearer $token",
+      }),
+    );
+
+    return res;
+  }
+
+  Future<ApiResponse<bool>> verifyEmail(
+    String email,
+    String code,
+    String token,
+  ) async {
+    var res = await dioBase.post<bool>(
+      endPoint: "/auth/verify-code",
+      data: {
+        "email": email,
+        "code": code,
+      },
+      options: Options(
+        headers: {
+          HttpHeaders.authorizationHeader: "Bearer $token",
+        },
+      ),
     );
 
     return res;

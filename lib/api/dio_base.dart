@@ -13,6 +13,7 @@ class DioBase {
     String endPoint,
     Map<String, dynamic> additionalParams,
     dynamic data,
+    Options options,
   }) async {
     Map<String, dynamic> params = {};
     if (additionalParams != null) {
@@ -25,7 +26,7 @@ class DioBase {
         DotEnv.env["ROOT_URL_DEV"] + endPoint,
         data: data,
         queryParameters: params,
-        options: Options(),
+        options: options,
       );
 
       if (res.statusCode == 200 || res.statusCode == 201) {
