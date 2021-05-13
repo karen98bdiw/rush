@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:rush/models/api_models/api_error.dart';
 import 'package:rush/models/api_models/api_response.dart';
@@ -47,10 +49,12 @@ class DioBase {
   }
 
   ///dio custom get request
-  Future<ApiResponse<T>> get<T>(
-      {String endPoint,
-      Map<String, dynamic> additionalParams,
-      dynamic data}) async {
+  Future<ApiResponse<T>> get<T>({
+    String endPoint,
+    Map<String, dynamic> additionalParams,
+    dynamic data,
+    Options options,
+  }) async {
     Map<String, dynamic> params = {};
     if (additionalParams != null) {
       additionalParams.forEach((key, value) {
@@ -61,7 +65,7 @@ class DioBase {
       var res = await _dio.get(
         DotEnv.env["ROOT_URL_DEV"] + endPoint,
         queryParameters: additionalParams,
-        options: Options(),
+        options: options,
       );
 
       if (res.statusCode == 200) {

@@ -35,6 +35,16 @@ class UserManagment {
     if (res.done && res.succses) {
       print("user created");
       print("response dat:${res.data.token}");
+      await getUserData(token: res.data.token);
+    } else {
+      showError(errorText: res.error.errorText);
+    }
+    return res;
+  }
+
+  Future<void> getUserData({String token}) async {
+    var res = await RushApi().userServices.getUserData(token: token);
+    if (res.succses && res.done) {
     } else {
       showError(errorText: res.error.errorText);
     }

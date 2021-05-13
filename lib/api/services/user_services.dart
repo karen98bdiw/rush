@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:rush/api/dio_base.dart';
 import 'package:rush/models/api_models/api_response.dart';
@@ -33,6 +35,17 @@ class UserServices {
         "password": password,
       },
     );
+    return res;
+  }
+
+  Future<ApiResponse<CustomUser>> getUserData({String token}) async {
+    var res = await dioBase.get<CustomUser>(
+      endPoint: DotEnv.env["USER_GET_PROFILE"],
+      options: Options(headers: {
+        HttpHeaders.authorizationHeader: token,
+      }),
+    );
+
     return res;
   }
 }
