@@ -60,6 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (c) => ApplyCodeScreen(
           token: signUpRes.response,
+          user: customUser,
         ),
       ));
     }

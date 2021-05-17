@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rush/l10n/l10n.dart';
 import 'package:rush/managment/locale.dart';
 import 'package:rush/pages/apply_code_screen.dart';
+import 'package:rush/pages/home_page.dart';
 import 'package:rush/pages/sign_in_screen.dart';
 import 'package:rush/pages/sign_up_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -28,6 +29,7 @@ class RushApp extends StatelessWidget {
       builder: (c, child) {
         var localeManagment = Provider.of<LocaleManagment>(c);
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           navigatorKey: GlobalKeys.navigatorKey,
           theme: ThemeData(
             fontFamily: "American Typewriter",
@@ -41,6 +43,7 @@ class RushApp extends StatelessWidget {
             SignUpScreen.routeName: (c) => SignUpScreen(),
             SignInScreen.routeName: (c) => SignInScreen(),
             ApplyCodeScreen.routeName: (c) => ApplyCodeScreen(),
+            HomePage.routeName: (c) => HomePage(),
           },
         );
       },

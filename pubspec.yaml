@@ -66,6 +66,7 @@ flutter:
     - assets/icons/passwordSuffix.svg
     - assets/icons/userPrefix.svg
     - assets/icons/doneIcon.svg    
+    - assets/images/homeBackground.png
   
   #   - images/a_dot_ham.jpeg
 

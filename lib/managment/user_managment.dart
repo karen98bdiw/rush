@@ -4,7 +4,7 @@ import 'package:rush/models/custom_user.dart';
 import 'package:rush/utils/diologs.dart';
 
 class UserManagment {
-  CustomUser curetUser;
+  CustomUser curentUser;
 
   Future<ApiResponse<dynamic>> signUp({
     CustomUser model,
@@ -52,6 +52,14 @@ class UserManagment {
           succses: codeRes.succses,
           response: res.data.token,
         );
+      } else {
+        await getUserData(
+          token: res.data.token,
+        );
+        return ApiResponse<bool>(
+          done: true,
+          succses: true,
+        );
       }
     } else {
       showError(errorText: res.error.errorText);
@@ -65,6 +73,7 @@ class UserManagment {
   Future<void> getUserData({String token}) async {
     var res = await RushApi().userServices.getUserData(token: token);
     if (res.succses && res.done) {
+      curentUser = res.data;
     } else {
       showError(errorText: res.error.errorText);
     }

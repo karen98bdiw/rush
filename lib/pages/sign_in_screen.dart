@@ -5,6 +5,7 @@ import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:provider/provider.dart';
 import 'package:rush/managment/locale.dart';
 import 'package:rush/managment/user_managment.dart';
+import 'package:rush/pages/home_page.dart';
 import 'package:rush/pages/sign_up_screen.dart';
 import 'package:rush/utils/colors.dart';
 import 'package:rush/utils/input_icons.dart';
@@ -32,13 +33,17 @@ class _SignInScreenState extends State<SignInScreen> {
   String password;
   UserManagment userManagment = UserManagment();
 
-  void onSignIn() {
+  void onSignIn() async {
     if (!_formState.currentState.validate()) return;
     _formState.currentState.save();
-    userManagment.signIn(
+    var res = await userManagment.signIn(
       email: email,
       password: password,
     );
+    if (res.done && res.succses) {
+      Navigator.of(context).pushNamed(HomePage.routeName);
+    }
+    print(userManagment.curentUser);
   }
 
   @override

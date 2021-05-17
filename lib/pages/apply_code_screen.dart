@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:rush/api/rush_api.dart';
+import 'package:rush/models/custom_user.dart';
 import 'package:rush/utils/colors.dart';
+import 'package:rush/utils/diologs.dart';
 import 'package:rush/widgets/app_inScreen_logo.dart';
 import 'package:rush/widgets/custom_button.dart';
 import 'package:rush/widgets/form_input.dart';
 
 class ApplyCodeScreen extends StatefulWidget {
   final String token;
+  final CustomUser user;
 
-  ApplyCodeScreen({this.token});
+  ApplyCodeScreen({this.token, this.user});
 
   static final routeName = "ApplyCodeScreen";
 
@@ -19,6 +23,21 @@ class ApplyCodeScreen extends StatefulWidget {
 
 class _ApplyCodeScreenState extends State<ApplyCodeScreen> {
   String code;
+
+  Future<bool> onApply() async {
+    print(code);
+    var res = await RushApi().userServices.verifyEmail(
+          code: code,
+          email: widget.user.email,
+          token: widget.token,
+        );
+        
+    if (res.done && res.succses) {
+      return true;
+    }
+
+    showError(errorText: res.error.errorText);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +102,7 @@ class _ApplyCodeScreenState extends State<ApplyCodeScreen> {
                     ),
                     CustomButton(
                       title: "Apply",
-                      onClick: () {},
+                      onClick: onApply,
                       fillColor: AppColors.Main_Orange,
                     ),
                   ],

@@ -41,7 +41,6 @@ class DioBase {
         error: ApiError(errorText: res.data.toString()),
       );
     } catch (e) {
-      print("dio basedd errror ${e.message}");
       return ApiResponse<T>(
         done: false,
         error: ApiError(errorText: e.toString()),

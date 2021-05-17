@@ -46,7 +46,7 @@ class UserServices {
     var res = await dioBase.get<CustomUser>(
       endPoint: DotEnv.env["USER_GET_PROFILE"],
       options: Options(headers: {
-        HttpHeaders.authorizationHeader: token,
+        HttpHeaders.authorizationHeader: "Bearer $token",
       }),
     );
 
@@ -67,13 +67,13 @@ class UserServices {
     return res;
   }
 
-  Future<ApiResponse<bool>> verifyEmail(
+  Future<ApiResponse<bool>> verifyEmail({
     String email,
     String code,
     String token,
-  ) async {
+  }) async {
     var res = await dioBase.post<bool>(
-      endPoint: "/auth/verify-code",
+      endPoint: "/auth/verify-email",
       data: {
         "email": email,
         "code": code,
