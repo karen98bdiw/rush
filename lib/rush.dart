@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rush/l10n/l10n.dart';
+import 'package:rush/managment/game_managment.dart';
 import 'package:rush/managment/locale.dart';
+import 'package:rush/managment/user_managment.dart';
 import 'package:rush/pages/apply_code_screen.dart';
 import 'package:rush/pages/home_page.dart';
 import 'package:rush/pages/sign_in_screen.dart';
@@ -25,6 +27,10 @@ class RushApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<LocaleManagment>(
             create: (c) => LocaleManagment()),
+        ChangeNotifierProvider<UserManagment>(
+          create: (c) => UserManagment(),
+        ),
+        ChangeNotifierProvider<GameManagment>(create: (c) => GameManagment()),
       ],
       builder: (c, child) {
         var localeManagment = Provider.of<LocaleManagment>(c);

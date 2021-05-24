@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:provider/provider.dart';
 import 'package:rush/api/rush_api.dart';
+import 'package:rush/managment/user_managment.dart';
 import 'package:rush/models/custom_user.dart';
 import 'package:rush/utils/colors.dart';
-import 'package:rush/utils/diologs.dart';
 import 'package:rush/widgets/app_inScreen_logo.dart';
 import 'package:rush/widgets/custom_button.dart';
-import 'package:rush/widgets/form_input.dart';
 
 class ApplyCodeScreen extends StatefulWidget {
   final String token;
@@ -23,20 +23,27 @@ class ApplyCodeScreen extends StatefulWidget {
 
 class _ApplyCodeScreenState extends State<ApplyCodeScreen> {
   String code;
+  UserManagment userManagment;
 
-  Future<bool> onApply() async {
+  void onApply() async {
     print(code);
     var res = await RushApi().userServices.verifyEmail(
           code: code,
           email: widget.user.email,
           token: widget.token,
         );
-        
-    if (res.done && res.succses) {
-      return true;
-    }
 
-    showError(errorText: res.error.errorText);
+    if (res.done && res.succses) {
+      Navigator.of(context).pop(true);
+    } else {
+      Navigator.of(context).pop(false);
+    }
+  }
+
+  @override
+  void initState() {
+    userManagment = Provider.of<UserManagment>(context, listen: false);
+    super.initState();
   }
 
   @override

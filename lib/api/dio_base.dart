@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:rush/models/api_models/api_error.dart';
 import 'package:rush/models/api_models/api_response.dart';
@@ -30,6 +28,7 @@ class DioBase {
       );
 
       if (res.statusCode == 200 || res.statusCode == 201) {
+        print("post reqwuest response ${res.data}");
         return ApiResponse<T>(
           done: true,
           succses: true,
@@ -62,6 +61,7 @@ class DioBase {
       });
     }
     try {
+      print("full get request path ${DotEnv.env["ROOT_URL_DEV"] + endPoint}");
       var res = await _dio.get(
         DotEnv.env["ROOT_URL_DEV"] + endPoint,
         queryParameters: additionalParams,
@@ -77,12 +77,14 @@ class DioBase {
       }
       return ApiResponse<T>(
         done: false,
+        succses: false,
         error: ApiError(errorText: res.data.toString()),
       );
     } catch (e) {
       print("dio basedd errror ${e.message}");
       return ApiResponse<T>(
         done: false,
+        succses: false,
         error: ApiError(errorText: e.toString()),
       );
     }

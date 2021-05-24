@@ -40,10 +40,15 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
+  integration_test: ^1.0.2+3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: any
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -67,6 +72,10 @@ flutter:
     - assets/icons/userPrefix.svg
     - assets/icons/doneIcon.svg    
     - assets/images/homeBackground.png
+    - assets/icons/leader.png
+    - assets/icons/prize.png
+    - assets/icons/person.png
+    - assets/icons/play.png
   
   #   - images/a_dot_ham.jpeg
 

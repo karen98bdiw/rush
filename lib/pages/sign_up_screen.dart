@@ -10,6 +10,7 @@ import 'package:rush/managment/locale.dart';
 import 'package:rush/managment/user_managment.dart';
 import 'package:rush/models/custom_user.dart';
 import 'package:rush/pages/apply_code_screen.dart';
+import 'package:rush/pages/home_page.dart';
 import 'package:rush/utils/colors.dart';
 import 'package:rush/utils/constats.dart';
 import 'package:rush/utils/custom_validators.dart';
@@ -40,10 +41,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   File pickedAvatar;
   CustomUser customUser = CustomUser();
   String _password;
-  UserManagment userManagment = UserManagment();
+  UserManagment userManagment;
 
   @override
   void initState() {
+    userManagment = Provider.of<UserManagment>(context, listen: false);
     localeManagment = Provider.of<LocaleManagment>(context, listen: false);
     super.initState();
   }
@@ -52,17 +54,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (!_formState.currentState.validate()) return;
     _formState.currentState.save();
     print("onSignUp");
+    print("custom ${customUser.toJson()}");
     var signUpRes = await userManagment.signUp(
       password: _password,
       model: customUser,
     );
     if (signUpRes.done && signUpRes.succses) {
-      Navigator.of(context).push(MaterialPageRoute(
+      var isApplied = await Navigator.of(context).push(MaterialPageRoute(
         builder: (c) => ApplyCodeScreen(
           token: signUpRes.response,
           user: customUser,
         ),
       ));
+      if (isApplied) {
+        print("customUser${customUser.email}");
+        var signInRes = await userManagment.signIn(
+          password: _password,
+          email: customUser.email,
+        );
+
+        if (signInRes.done && signInRes.succses) {
+          print("managment from signup ${userManagment.curentUser.email}");
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (c) => HomePage()));
+        }
+      }
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:rush/api/dio_base.dart';
+import 'package:rush/api/services/game_services.dart';
 import 'package:rush/api/services/user_services.dart';
 
 class RushApi {
@@ -11,6 +12,10 @@ class RushApi {
   factory RushApi() => rushApi;
 
   final UserServices userServices = UserServices(
+    dioBase: _dioBase,
+  );
+
+  final GameServices gameServices = GameServices(
     dioBase: _dioBase,
   );
 }

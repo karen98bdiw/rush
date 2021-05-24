@@ -1,10 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:rush/api/rush_api.dart';
 import 'package:rush/models/api_models/api_response.dart';
 import 'package:rush/models/custom_user.dart';
 import 'package:rush/utils/diologs.dart';
 
-class UserManagment {
+class UserManagment extends ChangeNotifier {
   CustomUser curentUser;
+  String token;
 
   Future<ApiResponse<dynamic>> signUp({
     CustomUser model,
@@ -35,6 +37,7 @@ class UserManagment {
     String password,
     bool firstSign = false,
   }) async {
+    print("email befor sign $email");
     var res = await RushApi().userServices.signIn(
           email: email,
           password: password,
@@ -43,6 +46,8 @@ class UserManagment {
     if (res.done && res.succses) {
       print("user created");
       print("response dat:${res.data.token}");
+      token = res.data.token;
+
       if (firstSign) {
         var codeRes = await RushApi()
             .userServices
@@ -53,9 +58,10 @@ class UserManagment {
           response: res.data.token,
         );
       } else {
+        print("else state ment is called-----------------------------");
         await getUserData(
-          token: res.data.token,
-        );
+            // token: res.data.token,
+            );
         return ApiResponse<bool>(
           done: true,
           succses: true,
@@ -70,10 +76,12 @@ class UserManagment {
     );
   }
 
-  Future<void> getUserData({String token}) async {
+  Future<void> getUserData() async {
     var res = await RushApi().userServices.getUserData(token: token);
     if (res.succses && res.done) {
+      print("curent user is changed ${res.data.email}");
       curentUser = res.data;
+      print("curent user from get user ${res.data.email}");
     } else {
       showError(errorText: res.error.errorText);
     }

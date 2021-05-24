@@ -43,6 +43,7 @@ class UserServices {
   }
 
   Future<ApiResponse<CustomUser>> getUserData({String token}) async {
+    print("toke in get user data$token");
     var res = await dioBase.get<CustomUser>(
       endPoint: DotEnv.env["USER_GET_PROFILE"],
       options: Options(headers: {
@@ -67,7 +68,7 @@ class UserServices {
     return res;
   }
 
-  Future<ApiResponse<bool>> verifyEmail({
+  Future<ApiResponse<String>> verifyEmail({
     String email,
     String code,
     String token,
@@ -85,6 +86,10 @@ class UserServices {
       ),
     );
 
-    return res;
+    return ApiResponse(
+      done: res.done,
+      succses: res.succses,
+      response: token,
+    );
   }
 }

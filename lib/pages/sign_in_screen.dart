@@ -31,7 +31,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
   String email;
   String password;
-  UserManagment userManagment = UserManagment();
+  UserManagment userManagment;
 
   void onSignIn() async {
     if (!_formState.currentState.validate()) return;
@@ -48,6 +48,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   void initState() {
+    userManagment = Provider.of<UserManagment>(context, listen: false);
     localeManagment = Provider.of<LocaleManagment>(context, listen: false);
     super.initState();
   }
