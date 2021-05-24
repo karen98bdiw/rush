@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:rush/blocs/game_bloc.dart';
 import 'package:rush/l10n/l10n.dart';
 import 'package:rush/managment/game_managment.dart';
 import 'package:rush/managment/locale.dart';
@@ -31,6 +33,9 @@ class RushApp extends StatelessWidget {
           create: (c) => UserManagment(),
         ),
         ChangeNotifierProvider<GameManagment>(create: (c) => GameManagment()),
+        BlocProvider<GameBloc>(
+          create: (c) => GameBloc(),
+        ),
       ],
       builder: (c, child) {
         var localeManagment = Provider.of<LocaleManagment>(c);

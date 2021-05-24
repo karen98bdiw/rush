@@ -1,9 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:rush/blocs/game_bloc.dart';
+import 'package:rush/blocs/game_event.dart';
+import 'package:rush/blocs/game_state.dart';
 import 'package:rush/managment/game_managment.dart';
 import 'package:rush/utils/colors.dart';
+import 'package:rush/utils/diologs.dart';
 
 class PlayScreen extends StatefulWidget {
   @override
@@ -16,9 +21,11 @@ class _PlayScreenState extends State<PlayScreen>
   int seconds = 60;
   int mSeconds = 1000;
   Timer timer;
+  GameBloc gameBloc;
 
   @override
   void initState() {
+    gameBloc = BlocProvider.of<GameBloc>(context, listen: false);
     gameManagment = Provider.of<GameManagment>(context, listen: false);
     timer = Timer.periodic(
       Duration(milliseconds: 1),
@@ -49,12 +56,57 @@ class _PlayScreenState extends State<PlayScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            timerAppBar(),
-          ],
+    return BlocConsumer<GameBloc, GameState>(
+      listener: (c, s) {},
+      builder: (c, state) => Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              timerAppBar(),
+              SizedBox(
+                height: 30,
+              ),
+              state.runtimeType == GameLoaded
+                  ? questionIndexIndicator(state)
+                  : Container(),
+              Text(
+                  "${gameManagment.curentGame.questions[(state as GameLoaded).curentQuestionIndex].questionText}"),
+              if (gameManagment
+                      .curentGame
+                      .questions[(state as GameLoaded).curentQuestionIndex]
+                      .image !=
+                  null)
+                Image.network(
+                  gameManagment
+                      .curentGame
+                      .questions[(state as GameLoaded).curentQuestionIndex]
+                      .image,
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                ),
+              ...gameManagment.curentGame
+                  .questions[(state as GameLoaded).curentQuestionIndex].options
+                  .map(
+                    (e) => Container(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: RaisedButton(
+                        onPressed: () {
+                          var nextIndex =
+                              (state as GameLoaded).curentQuestionIndex + 1;
+                          if (nextIndex !=
+                              gameManagment.curentGame.questions.length) {
+                            gameBloc.add(SetIndex(nextIndex));
+                          } else {
+                            showError(errorText: "Game is over");
+                          }
+                        },
+                        child: Text(e),
+                      ),
+                    ),
+                  )
+                  .toList()
+            ],
+          ),
         ),
       ),
     );
@@ -135,5 +187,31 @@ class _PlayScreenState extends State<PlayScreen>
             ),
           ),
         ],
+      );
+
+  Widget questionIndexIndicator(GameLoaded state) => Container(
+        height: 30,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (c, i) => GestureDetector(
+            onTap: () {
+              gameBloc.add(SetIndex(i));
+            },
+            child: Container(
+              width: (MediaQuery.of(context).size.width -
+                      (gameManagment.curentGame.questions.length - 1) * 10 -
+                      20) /
+                  gameManagment.curentGame.questions.length,
+              height: 20,
+              color:
+                  state.curentQuestionIndex == i ? Colors.green : Colors.grey,
+            ),
+          ),
+          separatorBuilder: (c, i) => SizedBox(
+            width: 10,
+          ),
+          itemCount: gameManagment.curentGame.questions.length,
+        ),
       );
 }
