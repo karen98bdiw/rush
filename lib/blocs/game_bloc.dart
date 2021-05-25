@@ -3,7 +3,7 @@ import 'package:rush/blocs/game_event.dart';
 import 'package:rush/blocs/game_state.dart';
 
 class GameBloc extends Bloc<GameEvent, GameState> {
-  GameBloc() : super(GameLoaded(7));
+  GameBloc() : super(GameLoaded(0));
 
   int index;
 

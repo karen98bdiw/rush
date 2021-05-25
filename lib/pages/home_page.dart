@@ -74,6 +74,9 @@ class _HomePageState extends State<HomePage> {
         errorText: "Sorry looks like you used all your free steps",
       );
     }
+    // Navigator.of(context).push(MaterialPageRoute(
+    //   builder: (c) => PlayScreen(),
+    // ));
   }
 
   @override

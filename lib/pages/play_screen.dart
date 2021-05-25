@@ -51,6 +51,8 @@ class _PlayScreenState extends State<PlayScreen>
   @override
   void dispose() {
     timer.cancel();
+    gameManagment.clearAnswers();
+    gameBloc.add(SetIndex(0));
     super.dispose();
   }
 
@@ -69,48 +71,80 @@ class _PlayScreenState extends State<PlayScreen>
               state.runtimeType == GameLoaded
                   ? questionIndexIndicator(state)
                   : Container(),
-              Text(
-                  "${gameManagment.curentGame.questions[(state as GameLoaded).curentQuestionIndex].questionText}"),
-              if (gameManagment
-                      .curentGame
-                      .questions[(state as GameLoaded).curentQuestionIndex]
-                      .image !=
-                  null)
-                Image.network(
-                  gameManagment
-                      .curentGame
-                      .questions[(state as GameLoaded).curentQuestionIndex]
-                      .image,
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  height: MediaQuery.of(context).size.height * 0.4,
-                ),
-              ...gameManagment.curentGame
-                  .questions[(state as GameLoaded).curentQuestionIndex].options
-                  .map(
-                    (e) => Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      child: RaisedButton(
-                        onPressed: () {
-                          var nextIndex =
-                              (state as GameLoaded).curentQuestionIndex + 1;
-                          if (nextIndex !=
-                              gameManagment.curentGame.questions.length) {
-                            gameBloc.add(SetIndex(nextIndex));
-                          } else {
-                            showError(errorText: "Game is over");
-                          }
-                        },
-                        child: Text(e),
-                      ),
-                    ),
-                  )
-                  .toList()
+              questionView(state),
             ],
           ),
         ),
       ),
     );
   }
+
+  Widget questionView(state) => Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 20,
+          horizontal: 20,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "${gameManagment.curentGame.questions[(state as GameLoaded).curentQuestionIndex].questionText}",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            if (gameManagment
+                    .curentGame
+                    .questions[(state as GameLoaded).curentQuestionIndex]
+                    .image !=
+                null)
+              Image.network(
+                gameManagment.curentGame
+                    .questions[(state as GameLoaded).curentQuestionIndex].image,
+                width: MediaQuery.of(context).size.width * 0.6,
+                height: MediaQuery.of(context).size.height * 0.4,
+              ),
+            SizedBox(
+              height: 20,
+            ),
+            ...gameManagment.curentGame
+                .questions[(state as GameLoaded).curentQuestionIndex].options
+                .map(
+                  (e) => Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: RaisedButton(
+                      onPressed: () {
+                        // var nextIndex = gameManagment.answers.length;
+
+                        gameManagment.answer(
+                          questionId: gameManagment
+                              .curentGame
+                              .questions[
+                                  (state as GameLoaded).curentQuestionIndex]
+                              .questionId,
+                          userAnswer: e,
+                        );
+                        if (gameManagment.answers.length ==
+                            gameManagment.curentGame.questions.length) {
+                          print("game${gameManagment.answers.length}");
+                          showError(errorText: "Game over");
+                        } else {
+                          gameBloc.add(SetIndex(gameManagment.answers.length));
+                        }
+
+                        // showError(errorText: "Game is over");
+                      },
+                      child: Text(e),
+                    ),
+                  ),
+                )
+                .toList()
+          ],
+        ),
+      );
 
   Widget timerAppBar() => Stack(
         overflow: Overflow.visible,
@@ -190,22 +224,69 @@ class _PlayScreenState extends State<PlayScreen>
       );
 
   Widget questionIndexIndicator(GameLoaded state) => Container(
-        height: 30,
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Colors.black,
+              width: 2,
+            ),
+          ),
+        ),
+        height: 50,
+        alignment: Alignment.topCenter,
+        margin: EdgeInsets.only(top: 20),
+        padding: EdgeInsets.only(left: 10, right: 10),
         child: ListView.separated(
+          shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemBuilder: (c, i) => GestureDetector(
             onTap: () {
-              gameBloc.add(SetIndex(i));
+              if (i < state.curentQuestionIndex ||
+                  gameManagment.answers.firstWhere(
+                          (element) =>
+                              element.questionId ==
+                              gameManagment.curentGame.questions[i].questionId,
+                          orElse: () => null) !=
+                      null) {
+                gameBloc.add(SetIndex(i));
+              }
             },
-            child: Container(
-              width: (MediaQuery.of(context).size.width -
-                      (gameManagment.curentGame.questions.length - 1) * 10 -
-                      20) /
-                  gameManagment.curentGame.questions.length,
-              height: 20,
-              color:
-                  state.curentQuestionIndex == i ? Colors.green : Colors.grey,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(6),
+                ),
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 100),
+                  width: (MediaQuery.of(context).size.width -
+                          (gameManagment.curentGame.questions.length - 1) * 10 -
+                          20) /
+                      gameManagment.curentGame.questions.length,
+                  height: state.curentQuestionIndex == i ? 40 : 20,
+                  decoration: BoxDecoration(
+                    color: state.curentQuestionIndex == i
+                        ? Colors.white
+                        : gameManagment.answers.firstWhere(
+                                    (element) =>
+                                        element.questionId ==
+                                        gameManagment
+                                            .curentGame.questions[i].questionId,
+                                    orElse: () => null) !=
+                                null
+                            ? Colors.green
+                            : Colors.grey,
+                    border: state.curentQuestionIndex == i
+                        ? Border(
+                            top: BorderSide(color: Colors.black, width: 2),
+                            left: BorderSide(color: Colors.black, width: 2),
+                            right: BorderSide(color: Colors.black, width: 2),
+                            // bottom: BorderSide(color: Colors.white, width: 2),
+                          )
+                        : null,
+                  ),
+                ),
+              ),
             ),
           ),
           separatorBuilder: (c, i) => SizedBox(

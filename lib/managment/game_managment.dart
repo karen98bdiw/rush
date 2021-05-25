@@ -4,8 +4,36 @@ import 'package:rush/api/rush_api.dart';
 import 'package:rush/models/api_models/api_response.dart';
 import 'package:rush/models/game_response.dart';
 
+class ColectedAnswer {
+  final String questionId;
+  String answer;
+
+  ColectedAnswer({this.answer, this.questionId});
+}
+
 class GameManagment extends ChangeNotifier {
   GameResponse curentGame;
+
+  List<ColectedAnswer> answers = [];
+
+  void answer({String questionId, String userAnswer}) {
+    var index =
+        answers.indexWhere((element) => element.questionId == questionId);
+
+    if (index == -1) {
+      answers.add(
+        ColectedAnswer(answer: userAnswer, questionId: questionId),
+      );
+    } else {
+      answers[index].answer = userAnswer;
+    }
+
+    print(answers);
+  }
+
+  void clearAnswers() {
+    answers = [];
+  }
 
   Future<ApiResponse<GameResponse>> pick({String token}) async {
     var res = await RushApi().gameServices.pick(
